@@ -1,0 +1,56 @@
+name: build_json
+
+on:
+  # schedule:
+    # - cron: 6 */8 * * *
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+            java-version: '17'
+            distribution: 'adopt'
+            cache: gradle
+      - name: 创建版本号
+        run: |              
+             if ! mv ./config/version  version; then
+                    echo "Failed to move the file."
+                    exit 1
+             fi
+                 
+             echo "version=$(bash ./config/version.sh)" >> $GITHUB_ENV
+             echo "**发布时间：$(date +'%Y-%m-%d %H:%M:%S')**" >> bgcode.txt
+             mv version config/version
+      - name: Build With Gradle
+        run: |
+          chmod +x gradlew ./jar/genJar.sh 
+          ./gradlew assembleRelease --no-daemon
+          ./jar/genJar.sh
+          echo "**md5：$(cat ./jar/bgcode_md5.txt)**" >> bgcode.txt
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Spider
+          path: ./jar/bg/*
+      - name: Commit and push changes
+        run: |
+            git config --local user.email bglhcode@icloud.com
+            git config --local user.name bgcode
+            git pull
+            git add ./jar/bgcode* ./config/version 
+            git commit -m "更新jar包  时间：$(date +'%Y-%m-%d %H:%M:%S')"
+            git push
+      - name: 发布到release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.version }}
+          body_path: bgcode.txt
+          files: ./jar/bg/*
