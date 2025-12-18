@@ -1,5 +1,5 @@
 {
-  "spider": "https://tvbox.201562.xyz/jar/bgcode.jar;md5;b9b741ae440dffc1a94b16cb070b01fe",
+  "spider": "https://tvbox.201562.xyz/jar/bgcode.jar;md5;3295aa6152f7459da1c0a757e86535a4",
   "lives": [
     {
       "name": "kimwang1978收集的直播【github】",
@@ -9,15 +9,22 @@
   ],
   "sites": [
     {
-      "key": "csp_Dm56",
+      "key": "csp_Douban",
+      "name": "分类｜豆瓣",
+      "type": 3,
+      "api": "csp_Douban",
+      "searchable": 1
+    },
+    {
+      "key": "csp_Anime1",
       "name": "动漫｜56动漫",
       "type": 3,
-      "api": "csp_Dm56",
+      "api": "csp_Anime1",
       "searchable": 1
     },
     {
       "key": "csp_Jpyy",
-      "name": "影视｜金鹰",
+      "name": "影视｜金鹰｜嘎",
       "type": 3,
       "api": "csp_Jpyy",
       "searchable": 1
@@ -28,17 +35,68 @@
       "type": 3,
       "api": "csp_Mb",
       "searchable": 1
-    }, {
-      "key": "csp_Xf",
-      "name": "动漫｜稀饭",
+    },
+    {
+      "key": "csp_AppYsV2",
+      "name": "影视｜应用影视",
       "type": 3,
-      "api": "csp_Xf",
+      "api": "csp_AppYsV2",
       "searchable": 1
-    },{
-      "key": "csp_Gqzy",
-      "name": "采集｜高清资源",
+    },
+    {
+      "key": "csp_DyGang",
+      "name": "影视｜电影港",
       "type": 3,
-      "api": "csp_Gqzy",
+      "api": "csp_DyGang",
+      "searchable": 1
+    },
+
+    {
+      "key": "csp_IQIYI",
+      "name": "影视｜爱奇艺",
+      "type": 3,
+      "api": "csp_IQIYI",
+      "searchable": 1
+    }
+  ,
+
+    {
+      "key": "csp_MGTV",
+      "name": "影视｜芒果台",
+      "type": 3,
+      "api": "csp_MGTV",
+      "searchable": 1
+    },
+
+    {
+      "key": "csp_PiaoHua",
+      "name": "影视｜飘花",
+      "type": 3,
+      "api": "csp_PiaoHua",
+      "searchable": 1
+    },
+
+    {
+      "key": "csp_SixV",
+      "name": "影视｜6V电影网",
+      "type": 3,
+      "api": "csp_SixV",
+      "searchable": 1
+    },
+
+    {
+      "key": "csp_Xl720",
+      "name": "影视｜迅雷电影天堂",
+      "type": 3,
+      "api": "csp_Xl720",
+      "searchable": 1
+    },
+
+    {
+      "key": "csp_SP360",
+      "name": "影视｜360",
+      "type": 3,
+      "api": "csp_SP360",
       "searchable": 1
     }
   ],
