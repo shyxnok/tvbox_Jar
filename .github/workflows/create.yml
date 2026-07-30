@@ -59,11 +59,12 @@ jobs:
       # ── 通知：sendPhoto 带模板 banner ──────────────────────────
       - name: Notify Banner
         if: success()
-        uses: shyxnok/send_email@v1.0.0
+        uses: shyxnok/send_email@main
         with:
           channel: telegram
           telegram_method: sendPhoto
           telegram_photo: 'https://picsum.photos/id/180/800/400'
+          telegram_parse_mode: HTML
           telegram_template: './templates/build.json'
           telegram_chat_id: "${{ secrets.TELEGRAM_CHAT_ID }}"
         env:
@@ -85,7 +86,7 @@ jobs:
       # ── 通知：sendDocument 发送 jar 文件 ───────────────────────
       - name: Notify Jar
         if: success()
-        uses: shyxnok/send_email@v1.0.0
+        uses: shyxnok/send_email@main
         with:
           channel: telegram
           telegram_method: sendDocument
@@ -99,7 +100,7 @@ jobs:
       # ── 通知：sendMessage 文本（成功/失败都发）─────────────────
       - name: Notify Status
         if: always()
-        uses: shyxnok/send_email@v1.0.0
+        uses: shyxnok/send_email@main
         with:
           channel: telegram
           body: |
