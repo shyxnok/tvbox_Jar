@@ -59,7 +59,7 @@ jobs:
       # ── 通知：sendPhoto 带模板 banner ──────────────────────────
       - name: Notify Banner
         if: success()
-        uses: shyxnok/send_email@main
+        uses: shyxnok/send_email@v1.1.0
         with:
           channel: telegram
           telegram_method: sendPhoto
