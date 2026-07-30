@@ -91,7 +91,10 @@ jobs:
           channel: telegram
           telegram_method: sendDocument
           telegram_document: './jar/bg/bgcode.jar'
-          telegram_document_caption: '<b>📦 bgcode.jar</b>\n版本：${{ env.version }}\nMD5：<code>${{ env.JAR_MD5 }}</code>'
+          telegram_document_caption: |
+            <b>📦 bgcode.jar</b>
+            版本：<code>${{ env.version }}</code>
+            MD5：<code>${{ env.JAR_MD5 }}</code>
           telegram_parse_mode: HTML
           telegram_chat_id: "${{ secrets.TELEGRAM_CHAT_ID }}"
         env:
@@ -105,10 +108,10 @@ jobs:
           channel: telegram
           body: |
             ${{ job.status == 'success' && '✅' || '❌' }} <b>Build ${{ job.status }}</b>
-            Repo: ${{ github.repository }}
-            Version: ${{ env.version }}
-            ${{ job.status == 'success' && format('MD5: {0}', env.JAR_MD5) || '' }}
-            ${{ job.status == 'failure' && format('<a href=\"{0}/{1}/actions/runs/{2}\">View logs</a>', github.server_url, github.repository, github.run_id) || '' }}
+            <code>${{ github.repository }}</code>
+            Version: <code>${{ env.version }}</code>
+            ${{ job.status == 'success' && format('MD5: <code>{0}</code>', env.JAR_MD5) || '' }}
+            ${{ job.status == 'failure' && format('<a href=\"{0}/{1}/actions/runs/{2}\">📋 View logs</a>', github.server_url, github.repository, github.run_id) || '' }}
           telegram_chat_id: "${{ secrets.TELEGRAM_CHAT_ID }}"
           telegram_parse_mode: HTML
         env:
