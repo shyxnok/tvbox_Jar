@@ -54,30 +54,17 @@ jobs:
           tag_name: ${{ env.version }}
           body_path: bgcode.txt
           files: ./jar/bg/*
-      - name: Notify Success
-        if: success()
+      - name: Notify
+        if: always()
         uses: shyxnok/send_email@v1.0.0
         with:
           channel: telegram
           body: |
-            <b>✅ Build Passed</b>
-            Repo: ${{ github.event.inputs.repo_url || github.repository }}
-            Branch: ${{ github.event.inputs.branch || github.ref_name }}
-          telegram_chat_id: "${{ secrets.TELEGRAM_CHAT_ID }}"
-          telegram_parse_mode: HTML
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-      
-      - name: Notify Failure
-        if: failure()
-        uses: shyxnok/send_email@v1.0.0
-        with:
-          channel: telegram
-          body: |
-            <b>❌ Build Failed</b>
-            Repo: ${{ github.event.inputs.repo_url || github.repository }}
-            Branch: ${{ github.event.inputs.branch || github.ref_name }}
-            <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View logs</a>
+            ${{ job.status == 'success' && '✅' || '❌' }} <b>Build ${{ job.status }}</b>
+            Repo: ${{ github.repository }}
+            Version: ${{ env.version }}
+            MD5: $(cat ./jar/bgcode_md5.txt)
+            ${{ job.status == 'failure' && format('<a href=\"{0}/{1}/actions/runs/{2}\">View logs</a>', github.server_url, github.repository, github.run_id) || '' }}
           telegram_chat_id: "${{ secrets.TELEGRAM_CHAT_ID }}"
           telegram_parse_mode: HTML
         env:
