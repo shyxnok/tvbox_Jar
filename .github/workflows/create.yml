@@ -31,10 +31,12 @@ jobs:
              mv version config/version
       - name: Build With Gradle
         run: |
-          chmod +x gradlew ./jar/genJar.sh 
+          chmod +x gradlew ./jar/genJar.sh
           ./gradlew assembleRelease --no-daemon
           ./jar/genJar.sh
           echo "**md5：$(cat ./jar/bgcode_md5.txt)**" >> bgcode.txt
+          echo "JAR_MD5=$(cat ./jar/bgcode_md5.txt)" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
@@ -54,7 +56,48 @@ jobs:
           tag_name: ${{ env.version }}
           body_path: bgcode.txt
           files: ./jar/bg/*
-      - name: Notify
+      # ── 通知：sendPhoto 带模板 banner ──────────────────────────
+      - name: Notify Banner
+        if: success()
+        uses: shyxnok/send_email@v1.0.0
+        with:
+          channel: telegram
+          telegram_method: sendPhoto
+          telegram_photo: 'https://picsum.photos/id/180/800/400'
+          telegram_template: './templates/build.json'
+          telegram_chat_id: "${{ secrets.TELEGRAM_CHAT_ID }}"
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          REPO: '${{ github.repository }}'
+          VERSION: '${{ env.version }}'
+          MD5: '${{ env.JAR_MD5 }}'
+          TIME: '${{ env.BUILD_TIME }}'
+          BRANCH: '${{ github.ref_name }}'
+          SHA_SHORT: '${{ github.sha }}'
+          STATUS: '✅ 成功'
+          RUN_ID: '${{ github.run_id }}'
+          EVENT: '${{ github.event_name }}'
+          RELEASE_URL: '${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ env.version }}'
+          LOG_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          REPO_URL: '${{ github.server_url }}/${{ github.repository }}'
+          COMMIT_URL: '${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}'
+
+      # ── 通知：sendDocument 发送 jar 文件 ───────────────────────
+      - name: Notify Jar
+        if: success()
+        uses: shyxnok/send_email@v1.0.0
+        with:
+          channel: telegram
+          telegram_method: sendDocument
+          telegram_document: './jar/bg/bgcode.jar'
+          telegram_document_caption: '<b>📦 bgcode.jar</b>\n版本：${{ env.version }}\nMD5：<code>${{ env.JAR_MD5 }}</code>'
+          telegram_parse_mode: HTML
+          telegram_chat_id: "${{ secrets.TELEGRAM_CHAT_ID }}"
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+      # ── 通知：sendMessage 文本（成功/失败都发）─────────────────
+      - name: Notify Status
         if: always()
         uses: shyxnok/send_email@v1.0.0
         with:
@@ -63,7 +106,7 @@ jobs:
             ${{ job.status == 'success' && '✅' || '❌' }} <b>Build ${{ job.status }}</b>
             Repo: ${{ github.repository }}
             Version: ${{ env.version }}
-            MD5: $(cat ./jar/bgcode_md5.txt)
+            ${{ job.status == 'success' && format('MD5: {0}', env.JAR_MD5) || '' }}
             ${{ job.status == 'failure' && format('<a href=\"{0}/{1}/actions/runs/{2}\">View logs</a>', github.server_url, github.repository, github.run_id) || '' }}
           telegram_chat_id: "${{ secrets.TELEGRAM_CHAT_ID }}"
           telegram_parse_mode: HTML
